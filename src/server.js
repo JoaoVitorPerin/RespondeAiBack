@@ -14,6 +14,9 @@ const supabase = require("./supabase");
 
 const app = express();
 
+const authRoutes =
+  require("./routes/auth.routes");
+
 app.use(cors({
   origin: "http://localhost:4200"
 }));
@@ -23,6 +26,8 @@ app.use(express.json());
 app.listen(3000, () => {
   console.log("Servidor rodando");
 });
+
+app.use("/auth", authRoutes);
 
 app.get("/mensagens/:phone", async (req, res) => {
 
@@ -146,6 +151,45 @@ app.post("/mensagem", async (req, res) => {
 
     res.status(500).json({
       erro: "Erro interno"
+    });
+  }
+});
+
+app.get("/politico/:hash", async (req, res) => {
+
+  try {
+
+    const { hash } = req.params;
+
+    const { data: politician, error } =
+      await supabase
+        .from("politicians")
+        .select(`
+          id,
+          name,
+          office,
+          photo_url,
+          chat_hash,
+          party,
+          vote_number
+        `)
+        .eq("chat_hash", hash)
+        .single();
+
+    if (error || !politician) {
+      return res.status(404).json({
+        erro: "Político não encontrado"
+      });
+    }
+
+    res.json(politician);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      erro: "Erro ao buscar político"
     });
   }
 });
