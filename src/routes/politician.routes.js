@@ -4,14 +4,11 @@ const router = express.Router();
 
 const {
   getPolitician,
+  updatePolitician
 } = require("../controllers/politician.controller");
 
 router.get("/:hash", getPolitician);
 
-// router.post("/:hash", createPolitician);
-
-// router.delete("/:hash", deletePolitician);
-
-// router.put("/:hash", updatePolitician);
+router.put("/:id", updatePolitician);
 
 module.exports = router;

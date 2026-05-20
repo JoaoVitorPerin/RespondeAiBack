@@ -14,7 +14,9 @@ async function getPolitician(req, res) {
           photo_url,
           chat_hash,
           party,
-          vote_number
+          vote_number,
+          phone,
+          email
         `)
         .eq("chat_hash", hash)
         .single();
@@ -37,6 +39,47 @@ async function getPolitician(req, res) {
   }
 }
 
+async function updatePolitician(req, res) {
+  try {
+    const { id } = req.params;
+    const { name, office, photo_url, chat_hash, party, vote_number, phone, email } = req.body;
+
+    const { data: updatedPolitician, error } = await supabase
+      .from("politicians")
+      .update({
+        name,
+        office,
+        photo_url,
+        chat_hash,
+        party,
+        vote_number,
+        phone,
+        email
+      })
+      .eq("id", id)
+      .select()
+      .single();
+    
+      console.log("Politico atualizado:", updatedPolitician);
+      console.log("Erro ao atualizar politico:", error);
+
+    if (error || !updatedPolitician) {
+      return res.status(404).json({
+        erro: "Político não encontrado"
+      });
+    }
+
+    res.json(updatedPolitician);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      erro: "Erro ao atualizar político"
+    });
+  }
+}
+
 module.exports = {
-  getPolitician
+  getPolitician,
+  updatePolitician
 }

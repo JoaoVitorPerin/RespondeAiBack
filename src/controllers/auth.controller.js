@@ -137,6 +137,7 @@ async function login(req, res) {
         photoUrl: politician.photo_url,
         chatHash: politician.chat_hash,
         party: politician.party,
+        phone: politician.phone,
         voteNumber: politician.vote_number
       }
     });
