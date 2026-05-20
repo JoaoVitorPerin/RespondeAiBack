@@ -50,12 +50,15 @@ app.post("/mensagem", async (req, res) => {
 
     const phone = req.body.phone;
 
+    const idPolitician = req.body.idPolitico;
+
     await supabase
       .from("messages")
       .insert({
         phone,
         role: "user",
-        content: mensagem
+        content: mensagem,
+        politician_id: idPolitician
       });
 
     const { data: historico } = await supabase
@@ -139,7 +142,8 @@ app.post("/mensagem", async (req, res) => {
       .insert({
         phone,
         role: "assistant",
-        content: resposta
+        content: resposta,
+        politician_id: idPolitician
       });
 
     res.json({
@@ -156,7 +160,6 @@ app.post("/mensagem", async (req, res) => {
 });
 
 app.get("/politico/:hash", async (req, res) => {
-
   try {
 
     const { hash } = req.params;
@@ -190,6 +193,75 @@ app.get("/politico/:hash", async (req, res) => {
 
     res.status(500).json({
       erro: "Erro ao buscar político"
+    });
+  }
+});
+
+app.get("/knowledge/:politicianId", async (req, res) => {
+
+  try {
+
+    const { politicianId } = req.params;
+
+    const { data, error } =
+      await supabase
+        .from("knowledge")
+        .select("*")
+        .eq("politician_id", politicianId)
+        .order("id", {
+          ascending: false
+        });
+
+    if (error) {
+      throw error;
+    }
+
+    res.json(data);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      erro: "Erro ao buscar knowledge"
+    });
+  }
+});
+
+app.post("/knowledge/:politicianId", async (req, res) => {
+
+  try {
+
+    const { politicianId } = req.params;
+
+    const {
+      title,
+      content
+    } = req.body;
+
+    const { data, error } =
+      await supabase
+        .from("knowledge")
+        .insert({
+          politician_id: politicianId,
+          title,
+          content
+        })
+        .select()
+        .single();
+
+    if (error) {
+      throw error;
+    }
+
+    res.status(201).json(data);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      erro: "Erro ao criar knowledge"
     });
   }
 });
