@@ -1,0 +1,42 @@
+const supabase = require("../supabase");
+
+async function getPolitician(req, res) {
+  try {
+    const { hash } = req.params;
+
+    const { data: politician, error } =
+      await supabase
+        .from("politicians")
+        .select(`
+          id,
+          name,
+          office,
+          photo_url,
+          chat_hash,
+          party,
+          vote_number
+        `)
+        .eq("chat_hash", hash)
+        .single();
+
+    if (error || !politician) {
+      return res.status(404).json({
+        erro: "Político não encontrado"
+      });
+    }
+
+    res.json(politician);
+
+  } catch (err) {
+
+    console.error(err);
+
+    res.status(500).json({
+      erro: "Erro ao buscar político"
+    });
+  }
+}
+
+module.exports = {
+  getPolitician
+}
