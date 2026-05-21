@@ -18,7 +18,10 @@ const sharp = require("sharp");
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:4200"
+  origin: [
+    "http://localhost:4200",
+    "https://respondeaifront-413712315816.southamerica-east1.run.app/"
+  ]
 }));
 
 app.use(express.json());
