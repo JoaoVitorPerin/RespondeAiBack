@@ -59,9 +59,6 @@ async function updatePolitician(req, res) {
       .eq("id", id)
       .select()
       .single();
-    
-      console.log("Politico atualizado:", updatedPolitician);
-      console.log("Erro ao atualizar politico:", error);
 
     if (error || !updatedPolitician) {
       return res.status(404).json({

@@ -107,6 +107,8 @@ async function createMessage(req, res) {
 
       Nova mensagem do cidadão:
       ${mensagem}
+
+      O retorno precisa ser html, com parágrafos, listas, negrito e itálico quando necessário para facilitar a leitura.
       
     `;
 
