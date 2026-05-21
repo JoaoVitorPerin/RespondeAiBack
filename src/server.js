@@ -20,7 +20,7 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:4200",
-    "https://respondeaifront-413712315816.southamerica-east1.run.app/"
+    "https://respondeaifront-413712315816.southamerica-east1.run.app"
   ]
 }));
 
