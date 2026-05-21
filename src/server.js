@@ -35,8 +35,10 @@ app.use("/mensagens", messageRoutes);
 const politicianRoutes = require("./routes/politician.routes");
 app.use("/politico", politicianRoutes);
 
-app.listen(3000, () => {
-  console.log("Servidor rodando");
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
 
 app.post(
