@@ -10,10 +10,13 @@ const model = genAI.getGenerativeModel({
 async function getMessages(req, res){
   const phone = req.params.phone;
 
+  const idPolitician = req.params.idPolitician;
+
   const { data } = await supabase
     .from("messages")
     .select("*")
     .eq("phone", phone)
+    .eq("politician_id", idPolitician)
     .order("created_at", {
       ascending: true
     });
@@ -38,6 +41,15 @@ async function createMessage(req, res) {
         politician_id: idPolitician
       });
 
+    const { data: politician } = await supabase
+      .from("politicians")
+      .select("*")
+      .eq("id", idPolitician)
+      .single()
+      .order("id", {
+        ascending: true
+      });
+
     const { data: historico } = await supabase
       .from("messages")
       .select("role, content")
@@ -45,11 +57,13 @@ async function createMessage(req, res) {
       .order("created_at", {
         ascending: true
       })
+      .eq("politician_id", idPolitician)
       .limit(10);
 
     const { data: conhecimentos } = await supabase
       .from("knowledge")
-      .select("*");
+      .select("*")
+      .eq("politician_id", idPolitician);
 
     const conhecimentosTexto = conhecimentos
       .map(msg => {
@@ -64,7 +78,9 @@ async function createMessage(req, res) {
       .join("\n");
 
     const prompt = `
-      Você é um assistente virtual de um vereador brasileiro.
+      Você é um assistente virtual de um politico brasileiro chamado ${politician.name}, que é ${politician.office}. Nome do partido ${politician.party} e número de voto ${politician.vote_number}. Email ${politician.email} e telefone ${politician.phone}. 
+
+      Fornceça o telefone e o email do político apenas se for solicitado diretamente, caso contrário, não revele essas informações.
 
       Seu objetivo é:
       - responder dúvidas dos cidadãos

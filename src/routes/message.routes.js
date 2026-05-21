@@ -7,7 +7,7 @@ const {
   createMessage
 } = require("../controllers/message.controller");
 
-router.get("/:phone", getMessages);
+router.get("/:phone/:idPolitician", getMessages);
 
 router.post("/enviar", createMessage);
 
