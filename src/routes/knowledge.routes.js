@@ -2,6 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
+const auth = require("../middlewares/auth");
+
 const {
   getKnowledge,
   createKnowledge,
@@ -9,12 +11,12 @@ const {
   updateKnowledge
 } = require("../controllers/knowledge.controller");
 
-router.get("/:politicianId", getKnowledge);
+router.get("/:politicianId", auth, getKnowledge);
 
-router.post("/:politicianId", createKnowledge);
+router.post("/:politicianId", auth, createKnowledge);
 
-router.delete("/:id/:politicianId", deleteKnowledge);
+router.delete("/:id/:politicianId", auth,deleteKnowledge);
 
-router.put("/:id", updateKnowledge);
+router.put("/:id", auth, updateKnowledge);
 
 module.exports = router;
